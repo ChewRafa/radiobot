@@ -35,7 +35,7 @@ class Streamer {
 
   log (callback, type = 'data') {
     return data => {
-      console.log('[INFO]', type, data.toString())
+      console.log(`[INFO] ${type} ${data.toString()}`)
       callback(data.toString())
     }
   }
@@ -72,7 +72,7 @@ class Streamer {
   }
 
   addSong (filename) {
-    fs.appendFileSync(this.conf.filename, filename + '\n')
+    fs.appendFileSync(this.conf.filename, '\n' + filename)
     if (this.Stream) this.flushPlayList()
   }
 
@@ -100,7 +100,7 @@ class Streamer {
   async startStream () {
     if (!fs.existsSync(this.conf.filename)) return
     const songs = fs.readFileSync(this.conf.filename, 'utf8').split('\n')
-    if (songs.length < 3) return console.log('[INFO] No Songs in playlist')
+    if (songs.length < 2) return console.log('[INFO] No Songs in playlist')
     await this.killStream()
     this.Stream = spawn('ezstream', ['-c', this.xmlFile])
     await this.spyProcess()
